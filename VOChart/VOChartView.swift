@@ -146,12 +146,16 @@ import UIKit
      */
     private func calculateYoffset() -> (offset: CGFloat, maxValue: CGFloat)  {
         var maxValue: CGFloat = valuesArray.first?.first ?? 0
+        var minValue: CGFloat = valuesArray.first?.first ?? 0
         
         for array in valuesArray {
             for number in array {
                 if number > maxValue { maxValue = number }
+                if number < minValue { minValue = number }
             }
         }
+        
+        maxValue += abs(minValue)
         
         return (frame.height / maxValue, maxValue)
     }
