@@ -142,9 +142,9 @@ import UIKit
     /**
      Calculate distance between Y values
      
-     - returns: Offset between Y values
+     - returns: Tuple, which contains: offset - Offset between Y values, maxValue & minValue - maximum & minimum values
      */
-    private func calculateYoffset() -> (offset: CGFloat, maxValue: CGFloat)  {
+    private func calculateYoffset() -> (offset: CGFloat, maxValue: CGFloat, minValue: CGFloat)  {
         var maxValue: CGFloat = valuesArray.first?.first ?? 0
         var minValue: CGFloat = valuesArray.first?.first ?? 0
         
@@ -157,7 +157,7 @@ import UIKit
         
         maxValue += abs(minValue)
         
-        return (frame.height / maxValue, maxValue)
+        return (frame.height / maxValue, maxValue, minValue)
     }
     
     /**
@@ -251,7 +251,10 @@ import UIKit
     private func drawLines() {
         
         let xOffset = calculateXoffset()
-        let yOffset = calculateYoffset().offset
+        let yData = calculateYoffset()
+        let yOffset = yData.offset
+        let maxValue = yData.maxValue
+        let minValue = yData.minValue
         
         for var lineIndex = 0; lineIndex < valuesArray.count; lineIndex++ {
             
@@ -265,8 +268,8 @@ import UIKit
             let lineValues = valuesArray[lineIndex]
             
             for var i = 0; i < lineValues.count; ++i {
-                let value = lineValues[i] * yOffset
-                let point = CGPoint(x: leftLabelsWidth + CGFloat(i) * xOffset, y: frame.height - value)
+                let value = (maxValue - lineValues[i] - abs(minValue)) * yOffset
+                let point = CGPoint(x: leftLabelsWidth + CGFloat(i) * xOffset, y: value)
                 
                 if path.empty {
                     path.moveToPoint(point)
